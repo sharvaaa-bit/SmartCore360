@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SmartCore360 | Smart Water Monitoring</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f7fb;
+            color: #172033;
+            min-height: 100vh;
+        }
+
+        body.dark {
+            background: #111827;
+            color: #f9fafb;
+        }
+
+        button,
+        input {
+            font: inherit;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+        }
+
+        .app {
+            max-width: 1400px;
+            margin: auto;
+            padding: 24px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+
+        .brand h1 {
+            font-size: 30px;
+            color: #2563eb;
+        }
+
+        .brand p {
+            margin-top: 6px;
+            color: #64748b;
+        }
+
+        body.dark .brand p {
+            color: #cbd5e1;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 11px 16px;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .primary {
+            background: #2563eb;
+        }
+
+        .success {
+            background: #16a34a;
+        }
+
+        .warning {
+            background: #d97706;
+        }
+
+        .danger {
+            background: #dc2626;
+        }
+
+        .secondary {
+            background: #475569;
+        }
+
+        .purple {
+            background: #7c3aed;
+        }
+
+        .btn:hover {
+            opacity: 0.85;
+        }
+
+        .status-bar {
+            background: white;
+            border-radius: 12px;
+            padding: 15px 18px;
+            margin-bottom: 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+        }
+
+        body.dark .status-bar,
+        body.dark .card {
+            background: #1f2937;
+            color: #f9fafb;
+        }
+
+        .status-text {
+            font-weight: bold;
+        }
+
+        .online {
+            color: #16a34a;
+        }
+
+        .offline {
+            color: #dc2626;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 22px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+        }
+
+        .card-title {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        body.dark .card-title {
+            color: #cbd5e1;
+        }
+
+        .card-value {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .card-info {
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        body.dark .card-info {
+            color: #cbd5e1;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 22px;
+        }
+
+        .section {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+            margin-bottom: 22px;
+        }
+
+        body.dark .section {
+            background: #1f2937;
+        }
+
+        .section h2 {
+            margin-bottom: 18px;
+            font-size: 21px;
+        }
+
+        canvas {
+            width: 100%;
+            height: 280px;
+            background: #f8fafc;
+            border-radius: 10px;
+        }
+
+        body.dark canvas {
+            background: #111827;
+        }
+
+        .sensor-control {
+            margin-bottom: 20px;
+        }
+
+        .sensor-control label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            accent-color: #2563eb;
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .recommendation {
+            background: #eff6ff;
+            border-left: 5px solid #2563eb;
+            padding: 15px;
+            border-radius: 8px;
+            line-height: 1.6;
+        }
+
+        body.dark .recommendation {
+            background: #172554;
+        }
+
+        .risk {
+            font-size: 34px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .risk-low {
+            color: #16a34a;
+        }
+
+        .risk-medium {
+            color: #d97706;
+        }
+
+        .risk-high {
+            color: #dc2626;
+        }
+
+        .log {
+            list-style: none;
+            max-height: 240px;
+            overflow-y: auto;
+        }
+
+        .log li {
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+
+        body.dark .log li {
+            border-bottom-color: #374151;
+        }
+
+        .pump-status {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .footer {
+            text-align: center;
+            color: #64748b;
+            padding: 15px;
+        }
+
+        .alert-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.72);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            z-index: 1000;
+        }
+
+        .alert-overlay.show {
+            display: flex;
+        }
+
+        .alert-box {
+            width: 100%;
+            max-width: 470px;
+            background: white;
+            color: #172033;
+            border-radius: 14px;
+            padding: 28px;
+            text-align: center;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .alert-box h2 {
+            color: #dc2626;
+            margin-bottom: 12px;
+        }
+
+        .alert-box p {
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .alert-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 1050px) {
+            .cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .app {
+                padding: 14px;
+            }
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            .brand h1 {
+                font-size: 25px;
+            }
+
+            .card-value {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app">
+
+        <header class="header">
+            <div class="brand">
+                <h1>SmartCore360</h1>
+                <p>Smart Water Resource Monitoring Dashboard</p>
+            </div>
+
+            <div class="header-actions">
+                <button class="btn primary" id="startBtn">Start</button>
+                <button class="btn warning" id="pauseBtn">Pause</button>
+                <button class="btn danger" id="stopBtn">Stop</button>
+                <button class="btn secondary" id="resetBtn">Reset</button>
+                <button class="btn purple" id="themeBtn">Dark Mode</button>
+            </div>
+        </header>
+
+        <div class="status-bar">
+            <div>
+                System Status:
+                <span id="systemStatus" class="status-text offline">Stopped</span>
+            </div>
+
+            <div>
+                Last Update:
+                <strong id="lastUpdate">--:--:--</strong>
+            </div>
+
+            <div>
+                <button class="btn danger" id="testAlertBtn">Test Alert</button>
+                <button class="btn secondary" id="muteBtn">Mute Sound</button>
+            </div>
+        </div>
+
+        <section class="cards">
+            <div class="card">
+                <div class="card-title">Water Tank Level</div>
+                <div class="card-value" id="tankValue">62%</div>
+                <div class="card-info">Safe range: 30% - 70%</div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Flow Rate</div>
+                <div class="card-value" id="flowValue">14.2</div>
+                <div class="card-info">Litres per minute</div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Line Pressure</div>
+                <div class="card-value" id="pressureValue">2.4</div>
+                <div class="card-info">Measured in bar</div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Water Quality</div>
+                <div class="card-value" id="qualityValue">Good</div>
+                <div class="card-info">Based on pH and turbidity</div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">pH Level</div>
+                <div class="card-value" id="phValue">7.1</div>
+                <div class="card-info">Normal range: 6.5 - 8.5</div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Turbidity</div>
+                <div class="card-value" id="turbidityValue">0.9</div>
+                <div class="card-info">Measured in NTU</div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Temperature</div>
+                <div class="card-value" id="temperatureValue">24.5°C</div>
+                <div class="card-info">Tank temperature</div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Leakage Status</div>
+                <div class="card-value" id="leakValue">No Leak</div>
+                <div class="card-info">Leak detection simulation</div>
+            </div>
+        </section>
+
+        <div class="main-grid">
+
+            <div>
+                <section class="section">
+                    <h2>Live Sensor Graph</h2>
+                    <canvas id="sensorChart" width="800" height="280"></canvas>
+                </section>
+
+                <section class="section">
+                    <h2>Sensor Simulation Controls</h2>
+
+                    <div class="sensor-control">
+                        <label>
+                            <span>Water Tank Level</span>
+                            <span id="tankSliderText">62%</span>
+                        </label>
+                        <input type="range" id="tankSlider" min="0" max="100" value="62">
+                    </div>
+
+                    <div class="sensor-control">
+                        <label>
+                            <span>Pressure</span>
+                            <span id="pressureSliderText">2.4 bar</span>
+                        </label>
+                        <input type="range" id="pressureSlider" min="0" max="6" step="0.1" value="2.4">
+                    </div>
+
+                    <div class="sensor-control">
+                        <label>
+                            <span>pH Level</span>
+                            <span id="phSliderText">7.1</span>
+                        </label>
+                        <input type="range" id="phSlider" min="0" max="14" step="0.1" value="7.1">
+                    </div>
+
+                    <div class="sensor-control">
+                        <label>
+                            <span>Turbidity</span>
+                            <span id="turbiditySliderText">0.9 NTU</span>
+                        </label>
+                        <input type="range" id="turbiditySlider" min="0" max="20" step="0.1" value="0.9">
+                    </div>
+
+                    <div class="control-buttons">
+                        <button class="btn danger" id="leakBtn">Simulate Leakage</button>
+                        <button class="btn success" id="clearLeakBtn">Clear Leakage</button>
+                    </div>
+                </section>
+            </div>
+
+            <div>
+                <section class="section">
+                    <h2>Pump Control</h2>
+
+                    <div class="pump-status">
+                        Pump:
+                        <span id="pumpStatus" class="offline">Stopped</span>
+                    </div>
+
+                    <div class="control-buttons">
+                        <button class="btn success" id="startPumpBtn">Start Pump</button>
+                        <button class="btn danger" id="stopPumpBtn">Stop Pump</button>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>Risk Assessment</h2>
+
+                    <div id="riskValue" class="risk risk-low">Low</div>
+                    <p id="riskDescription">All monitored values are within the safe range.</p>
+                </section>
+
+                <section class="section">
+                    <h2>Smart Recommendation</h2>
+
+                    <div id="recommendation" class="recommendation">
+                        Continue normal monitoring.
+                    </div>
+                </section>
+<section class="section">
+    <h2>AI Insight Assistant</h2>
+
+    <p style="margin-bottom: 12px;">
+        Ask the assistant about the current water-system condition.
+    </p>
+
+    <input
+        type="text"
+        id="aiQuestion"
+        placeholder="Example: Why is the tank level low?"
+        style="
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        "
+    >
+
+    <button class="btn purple" id="askAiBtn">
+        Ask Assistant
+    </button>
+
+    <div
+        id="aiAnswer"
+        class="recommendation"
+        style="margin-top: 15px;"
+    >
+        Hello! I can explain the current sensor readings.
+    </div>
+</section>
+
+                <section class="section">
+                    <h2>Activity Log</h2>
+                    <ul id="activityLog" class="log"></ul>
+                </section>
+            </div>
+        </div>
+
+        <div class="footer">
+            SmartCore360 Prototype | Simulation Mode
+        </div>
+    </div>
+
+    <div id="alertOverlay" class="alert-overlay">
+        <div class="alert-box">
+            <h2 id="alertTitle">Warning Alert</h2>
+            <p id="alertMessage">
+                Abnormal sensor value detected.
+            </p>
+
+            <div class="alert-buttons">
+                <button class="btn success" id="acknowledgeBtn">
+                    Acknowledge
+                </button>
+
+                <button class="btn danger" id="closeAlertBtn">
+                    Close Alert
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+<!-- SmartCore360 Smart Water Advisor -->
+<section style="
+    max-width: 700px;
+    margin: 25px auto;
+    padding: 22px;
+    background: white;
+    color: #172033;
+    border-radius: 14px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+">
+
+    <h2 style="margin-bottom: 8px;">
+        🤖 SmartCore360 Smart Water Advisor
+    </h2>
+
+    <p style="margin-bottom: 15px; color: #475569;">
+        Get practical suggestions based on the current simulated sensor readings.
+    </p>
+
+    <button id="smartAdviceButton" style="
+        padding: 12px 18px;
+        border: none;
+        border-radius: 8px;
+        background: #2563eb;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+        margin-right: 8px;
+    ">
+        Generate Smart Advice
+    </button>
+
+    <button id="smartProblemButton" style="
+        padding: 12px 18px;
+        border: none;
+        border-radius: 8px;
+        background: #dc2626;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+    ">
+        Find Problems
+    </button>
+
+    <div id="smartAdviceResult" style="
+        margin-top: 18px;
+        padding: 16px;
+        background: #eff6ff;
+        border-radius: 10px;
+        line-height: 1.7;
+    ">
+        Click “Generate Smart Advice” to receive useful recommendations.
+    </div>
+</section>
+
+<script>
+(function () {
+
+    const adviceButton = document.getElementById("smartAdviceButton");
+    const problemButton = document.getElementById("smartProblemButton");
+    const resultBox = document.getElementById("smartAdviceResult");
+
+    function getText(id) {
+        const element = document.getElementById(id);
+        return element ? element.textContent.trim() : "Not available";
+    }
+
+    function getNumber(id) {
+        const element = document.getElementById(id);
+
+        if (!element) {
+            return null;
+        }
+
+        const number = parseFloat(
+            element.textContent.replace(/[^\d.-]/g, "")
+        );
+
+        return Number.isNaN(number) ? null : number;
+    }
+
+    function generateAdvice() {
+
+        const tank = getNumber("tankValue");
+        const pressure = getNumber("pressureValue");
+        const ph = getNumber("phValue");
+        const turbidity = getNumber("turbidityValue");
+        const leakage = getText("leakValue").toLowerCase();
+        const pump = getText("pumpStatus").toLowerCase();
+
+        let advice = [];
+        let status = "System appears stable";
+
+        if (tank !== null) {
+
+            if (tank < 20) {
+                status = "Critical: Low water level";
+
+                advice.push(
+                    "🔴 <b>Low tank level:</b> Start the pump only if the water source is available. " +
+                    "Check the supply line and avoid unnecessary water usage."
+                );
+            } else if (tank > 90) {
+                status = "Warning: Tank almost full";
+
+                advice.push(
+                    "🟠 <b>High tank level:</b> Stop the pump if the tank is full. " +
+                    "This helps prevent overflow and water wastage."
+                );
+            } else {
+                advice.push(
+                    "🟢 <b>Tank level:</b> The tank is within the normal operating range. " +
+                    "Continue monitoring the level."
+                );
+            }
+        }
+
+        if (pressure !== null) {
+
+            if (pressure < 1) {
+                advice.push(
+                    "🔴 <b>Low pressure:</b> Inspect the pump, pipe blockage, closed valves, " +
+                    "and possible water-supply problems."
+                );
+            } else if (pressure > 4) {
+                advice.push(
+                    "🟠 <b>High pressure:</b> Inspect the pressure-control system and pipes. " +
+                    "High pressure may damage plumbing."
+                );
+            } else {
+                advice.push(
+                    "🟢 <b>Pressure:</b> Pressure is inside the example safe range."
+                );
+            }
+        }
+
+        if (
+            leakage.includes("detected") ||
+            leakage.includes("yes") ||
+            leakage.includes("active") ||
+            leakage.includes("leak")
+        ) {
+            status = "Warning: Possible leakage detected";
+
+            advice.push(
+                "🚰 <b>Leakage detected:</b> Inspect pipe joints, valves, taps, and underground lines. " +
+                "If this were a real system, close the relevant valve and notify maintenance."
+            );
+        } else {
+            advice.push(
+                "🟢 <b>Leakage:</b> No leakage is currently reported by the simulation."
+            );
+        }
+
+        if (ph !== null) {
+
+            if (ph < 6.5 || ph > 8.5) {
+                advice.push(
+                    "🧪 <b>Water-quality warning:</b> The pH is outside the example acceptable range. " +
+                    "A real system should send a sample for professional water-quality testing."
+                );
+            } else {
+                advice.push(
+                    "🧪 <b>pH:</b> The simulated pH is within the example acceptable range."
+                );
+            }
+        }
+
+        if (turbidity !== null && turbidity > 5) {
+            advice.push(
+                "⚠️ <b>High turbidity:</b> Check the filter, storage tank cleanliness, " +
+                "and possible dirt entering the water line."
+            );
+        }
+
+        if (pump.includes("running")) {
+            advice.push(
+                "⚙️ <b>Pump:</b> The pump is running. Stop it when the tank reaches the required level " +
+                "to reduce electricity use and avoid overflow."
+            );
+        } else {
+            advice.push(
+                "⚙️ <b>Pump:</b> The pump is not running. Start it only when water is required " +
+                "and the source has enough water."
+            );
+        }
+
+        advice.push(
+            "💧 <b>Water-saving suggestion:</b> Track daily usage, repair leaks quickly, " +
+            "reuse suitable greywater for gardening, and avoid running pumps unnecessarily."
+        );
+
+        resultBox.innerHTML =
+            "<h3>System Recommendation</h3>" +
+            "<p><b>Overall status:</b> " + status + "</p>" +
+            "<ul>" +
+            advice.map(function (item) {
+                return "<li>" + item + "</li>";
+            }).join("") +
+            "</ul>" +
+            "<p><b>Important:</b> These recommendations use simulated dashboard values. " +
+            "A real deployment needs certified sensors and safety controls.</p>";
+    }
+
+    function findProblems() {
+
+        const tank = getNumber("tankValue");
+        const pressure = getNumber("pressureValue");
+        const leakage = getText("leakValue").toLowerCase();
+
+        let problems = [];
+
+        if (tank !== null && tank < 20) {
+            problems.push("🔴 Tank level is very low.");
+        }
+
+        if (tank !== null && tank > 90) {
+            problems.push("🟠 Tank may overflow.");
+        }
+
+        if (pressure !== null && pressure < 1) {
+            problems.push("🔴 Line pressure is very low.");
+        }
+
+        if (pressure !== null && pressure > 4) {
+            problems.push("🟠 Line pressure is very high.");
+        }
+
+        if (
+            leakage.includes("detected") ||
+            leakage.includes("yes") ||
+            leakage.includes("active") ||
+            leakage.includes("leak")
+        ) {
+            problems.push("🚰 Possible leakage detected.");
+        }
+
+        if (problems.length === 0) {
+            problems.push(
+                "🟢 No major problem detected from the currently available simulated readings."
+            );
+        }
+
+        resultBox.innerHTML =
+            "<h3>Detected Problems</h3>" +
+            "<ul>" +
+            problems.map(function (problem) {
+                return "<li>" + problem + "</li>";
+            }).join("") +
+            "</ul>" +
+            "<p><b>Next step:</b> Check the dashboard regularly and investigate any warning before it becomes serious.</p>";
+    }
+
+    adviceButton.addEventListener("click", generateAdvice);
+    problemButton.addEventListener("click", findProblems);
+
+})();
+</script>
+</body>
+</html>
