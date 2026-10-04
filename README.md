@@ -40,6 +40,9 @@ SmartCore360/
 ├── script.js
 └── README.md
 ```
+## 📸 Dashboard Preview
+
+![SmartCore360 Dashboard](smartcore360-dashboard.png)
 
 ## 👨‍💻 Author
 
@@ -47,3 +50,4 @@ SmartCore360/
 
 B.Tech Computer Science & Engineering Student
 Sri Manakula Vinayagar Engineering College (SMVEC), Puducherry
+
